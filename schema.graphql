@@ -1,6 +1,87 @@
-type ExampleEntity @entity {
+### Protocol Level ###
+type Protocol @entity {
   id: Bytes!
-  count: BigInt!
-  owner: Bytes! # address
-  spender: Bytes! # address
+  vaults: [Vault!]
+  totalDeposits: BigInt
+  totalDepositAmount: BigInt
+  totalValueLocked: BigInt
+}
+
+### Vault Level ###
+type Vault @entity {
+  id: Bytes!
+
+  " Swap Vault or Leverage Vault"
+  type: String!
+  AUM: BigDecimal
+  tokenBalances: BigInt
+  DepositCount: BigInt
+  WithdrawCount: BigInt
+  Deposits: [Deposit!]
+  WithdrawRequest: [Withdraw!]
+  createdAt: BigInt!
+}
+
+### Account Level ###
+type Account @entity {
+  id: Bytes!
+  deposits: [Deposit!]
+  withdrawRequests: [Withdraw!]
+}
+
+"Describes an accounts relationship with a vault"
+type Position @entity {
+  id: Bytes!
+  account: Account
+  vault: Vault
+  "not sure if this will be a BigDecimal or an array of BigInt's depends on how users interact with a vault"
+  entry: [BigDecimal!]
+}
+
+### Tokens used in Protocol ###
+type Token @entity {
+  id: Bytes!
+  Name: String!
+  Symbol: String!
+  Decimals: BigInt!
+}
+
+### Events ###
+type Deposit @entity(immutable: true) {
+  id: Bytes!
+  hash: Bytes
+  eventLog: BigInt
+  account: Account
+  amount: BigInt
+  token: Token
+}
+
+" Reqest to withdraw "
+type Withdraw @entity(immutable: true) {
+  id: Bytes!
+  hash: Bytes
+  eventLog: BigInt
+  account: Account
+  amount: BigInt
+  token: Token
+}
+
+" The settlement of a withdrawal request "
+type WithdrawTrade @entity(immutable: true) {
+  id: Bytes!
+  hash: Bytes
+  eventLog: BigInt
+  account: Account
+  amount: BigInt
+  token: Token
+}
+
+#I'm asuming the vault will emit some type of trade event
+type Trade @entity(immutable: true) {
+  id: Bytes!
+  hash: Bytes
+  eventLog: BigInt
+  vault: Vault
+  amount: BigInt
+  token: Token
 }
