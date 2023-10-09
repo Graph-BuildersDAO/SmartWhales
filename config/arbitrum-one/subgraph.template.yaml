@@ -1,0 +1,296 @@
+specVersion: 0.0.4
+# features:
+#   - grafting
+# graft:
+#   base: QmVXqfMqjpDUYpMXGsuuNZ931DAQq9n1rLc2N2fXsDUt89
+#   block: 16313254
+schema:
+  file: ./schema.graphql
+dataSources:
+  - kind: ethereum
+    name: TokensFactory
+    network: {{network}}
+    source:
+      address: "{{tokensfactory}}"
+      abi: TokensFactory
+      startBlock: {{startblock}}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      entities:
+        - Token
+      abis:
+        - name: TokensFactory
+          file: ./abis/TokensFactory.json
+        - name: ERC20
+          file: ./abis/erc20.json
+        - name: ERC20BYTES
+          file: ./abis/erc20Bytes.json
+        - name: PriceProvidersRepository
+          file: ./abis/PriceProvidersRepository.json
+      eventHandlers:
+        - event: NewShareCollateralTokenCreated(indexed address)
+          handler: handleNewShareCollateralTokenCreated
+        - event: NewShareDebtTokenCreated(indexed address)
+          handler: handleNewShareDebtTokenCreated
+      file: ./src/tokens-factory.ts
+  - kind: ethereum/contract
+    name: PriceProvidersRepository
+    network: {{network}}
+    source:
+      address: "{{priceprovidersrepository}}"
+      abi: PriceProvidersRepository
+      startBlock: {{startblock}}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      entities:
+        - PriceProvider
+      abis:
+        - name: PriceProvidersRepository
+          file: ./abis/PriceProvidersRepository.json
+        - name: SiloLens
+          file: ./abis/SiloLens.json
+        - name: ERC20
+          file: ./abis/erc20.json
+        - name: ERC20BYTES
+          file: ./abis/erc20Bytes.json
+      eventHandlers:
+        - event: PriceProviderForAsset(indexed address,indexed address)
+          handler: handlePriceProviderForAsset
+        - event: NewPriceProvider(indexed address)
+          handler: handleNewPriceProvider
+        - event: PriceProviderRemoved(indexed address)
+          handler: handlePriceProviderRemoved
+      file: ./src/priceProvider.ts
+  - kind: ethereum/contract
+    name: InterestRateModel
+    network: {{network}}
+    source:
+      address: "{{interestratemodel}}"
+      abi: InterestRateModel
+      startBlock: {{startblock}}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      entities:
+        - PriceProvider
+      abis:
+        - name: InterestRateModel
+          file: ./abis/InterestRateModel.json
+        - name: SiloLens
+          file: ./abis/SiloLens.json
+        - name: ERC20
+          file: ./abis/erc20.json
+        - name: ERC20BYTES
+          file: ./abis/erc20Bytes.json
+        - name: PriceProvidersRepository
+          file: ./abis/PriceProvidersRepository.json
+      eventHandlers:
+        - event: ConfigUpdate(indexed address,indexed address,(int256,int256,int256,int256,int256,int256,int256,int256,int256,int256))
+          handler: handleConfigUpdate
+      file: ./src/interest-rate-model.ts
+  - kind: ethereum
+    name: SiloRepository
+    network: {{network}}
+    source:
+      address: "{{silorepository}}"
+      abi: SiloRepository
+      startBlock: {{startblock}}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      entities:
+        - InitSiloRepository
+        - NewSiloCreated
+      abis:
+        - name: SiloFactory
+          file: ./abis/SiloFactory.json
+        - name: Silo
+          file: ./abis/Silo.json
+        - name: PriceProvidersRepository
+          file: ./abis/PriceProvidersRepository.json
+        - name: SiloRepository
+          file: ./abis/SiloRepository.json
+        - name: SiloLens
+          file: ./abis/SiloLens.json
+        - name: ERC20
+          file: ./abis/erc20.json
+        - name: ERC20BYTES
+          file: ./abis/erc20Bytes.json
+        - name: InterestRateModel
+          file: ./abis/InterestRateModel.json
+        - name: LiquidationHelper
+          file: ./abis/LiquidationHelper.json
+      eventHandlers:
+        - event: AssetConfigUpdate(indexed address,indexed address,(uint64,uint64,address))
+          handler: handleAssetConfigUpdate
+        - event: NewSilo(indexed address,indexed address,uint128)
+          handler: handleNewSiloCreated
+        - event: SiloPause(address,address,bool)
+          handler: handleSiloPause
+      file: ./src/silo-repository.ts
+  - kind: ethereum
+    name: Tower
+    network: {{network}}
+    source:
+      address: "{{tower}}"
+      abi: Tower
+      startBlock: {{startblock}}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      entities:
+        - NewCoordinates
+        - OwnershipPending
+        - OwnershipTransferred
+        - RemovedCoordinates
+        - UpdateCoordinates
+      abis:
+        - name: Tower
+          file: ./abis/Tower.json
+      eventHandlers:
+        - event: NewCoordinates(string,indexed address)
+          handler: handleNewCoordinates
+        - event: UpdateCoordinates(string,indexed address)
+          handler: handleNewCoordinates
+      file: ./src/tower.ts
+  - kind: ethereum/contract
+    name: SiloIncentivesController
+    network: {{network}}
+    source:
+      address: "{{incentivescontroller}}"
+      abi: SiloIncentivesController
+      startBlock: {{startblock}}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      entities:
+        - Token
+      abis:
+        - name: SiloIncentivesController
+          file: ./abis/SiloIncentivesController.json
+      eventHandlers:
+        - event: AssetConfigUpdated(indexed address,uint256)
+          handler: handleAssetConfigUpdate
+      file: ./src/incentives-controller.ts
+templates:
+  - name: SiloToken
+    kind: ethereum/contract
+    network: {{network}}
+    source:
+      abi: ERC20
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      file: ./src/SiloToken.ts
+      entities:
+        - Position
+      abis:
+        - name: ERC20
+          file: ./abis/erc20.json
+        - name: ERC20BYTES
+          file: ./abis/erc20Bytes.json
+        - name: PriceProvidersRepository
+          file: ./abis/PriceProvidersRepository.json
+        - name: SiloLens
+          file: ./abis/SiloLens.json
+        - name: Silo
+          file: ./abis/Silo.json
+      eventHandlers:
+        - event: Transfer(indexed address,indexed address,uint256)
+          handler: handleTransfer
+  - name: Silo
+    kind: ethereum/contract
+    network: {{network}}
+    source:
+      abi: Silo
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      file: ./src/silo.ts
+      entities:
+        - Position
+      abis:
+        - name: Silo
+          file: ./abis/Silo.json
+        - name: ERC20
+          file: ./abis/erc20.json
+        - name: ERC20BYTES
+          file: ./abis/erc20Bytes.json
+        - name: PriceProvidersRepository
+          file: ./abis/PriceProvidersRepository.json
+        - name: SiloLens
+          file: ./abis/SiloLens.json
+        - name: InterestRateModel
+          file: ./abis/InterestRateModel.json
+      eventHandlers:
+        - event: AssetStatusUpdate(indexed address,indexed uint8)
+          handler: handleAssetStatusUpdate
+        - event: Borrow(indexed address,indexed address,uint256)
+          handler: handleBorrow
+        - event: Deposit(indexed address,indexed address,uint256,bool)
+          handler: handleDeposit
+        - event: Liquidate(indexed address,indexed address,uint256,uint256)
+          handler: handleLiquidate
+        - event: Repay(indexed address,indexed address,uint256)
+          handler: handleRepay
+        - event: Withdraw(indexed address,indexed address,indexed address,uint256,bool)
+          handler: handleWithdraw
+  - kind: ethereum/contract
+    name: LiquidationTemplate
+    network: {{network}}
+    source:
+      abi: LiquidationHelper
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      entities:
+        - LiquidationHelper
+      abis:
+        - name: LiquidationHelper
+          file: ./abis/LiquidationHelper.json
+        - name: SiloLens
+          file: ./abis/SiloLens.json
+        - name: PriceProvidersRepository
+          file: ./abis/PriceProvidersRepository.json
+        - name: Silo
+          file: ./abis/Silo.json
+      eventHandlers:
+        - event: LiquidationBalance(address,uint256,uint256)
+          handler: handleLiquidationBalance
+      file: ./src/modules/entity-factory.ts
+  - kind: ethereum/contract
+    name: BlockUpdates
+    network: {{network}}
+    source:
+      abi: LiquidationHelper
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      entities:
+        - ActiveAccount
+      abis:
+        - name: LiquidationHelper
+          file: ./abis/LiquidationHelper.json
+        - name: SiloLens
+          file: ./abis/SiloLens.json
+        - name: PriceProvidersRepository
+          file: ./abis/PriceProvidersRepository.json
+        - name: Silo
+          file: ./abis/Silo.json
+        - name: InterestRateModel
+          file: ./abis/InterestRateModel.json
+      blockHandlers:
+        - handler: handleBlockUpdates
+      file: ./src/block-updates.ts

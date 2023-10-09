@@ -1,0 +1,18 @@
+{
+  "network": "mainnet",
+  "zeroaddress": "0x0000000000000000000000000000000000000000",
+  "silorepository": "0xd998C35B7900b344bbBe6555cc11576942Cf309d",
+  "priceprovidersrepository": "0x7C2ca9D502f2409BeceAfa68E97a176Ff805029F",
+  "silofactory": "0x4D919CEcfD4793c0D47866C8d0a02a0950737589",
+  "tokensfactory": "0x0e37Df413f97fC198a84A21BC463C41b516AD622",
+  "tokensfactory2": "0x5bf4E67127263D951FC515E23B323d0e3b4485fd",
+  "tower": "0xF6a89F965E8c94da53f03b84563f103126ba5f23",
+  "interestratemodel": "0x7e9e7ea94e1ff36e216a703d6d66ece356a5fd44",
+  "silolens": "0xf12C3758c1eC393704f0Db8537ef7F57368D92Ea",
+  "startblock": "15307293",
+  "blockupdaterblock": "16785240",
+  "liquidationhelperv1": "0x58f6a780fe047b1EC4E4F8A4fD418B81361cA85d",
+  "liquidationhelperv2": "0x91e94B6BA4e2D05D1427E6eE3873bcA7282Ce17d",
+  "liquidationhelperv3": "0xfc741d3ce8373bead86986f9e0d0555fcbc5fb7c",
+  "incentivescontroller": "0x6c1603aB6CecF89DD60C24530DdE23F97DA3C229"
+}

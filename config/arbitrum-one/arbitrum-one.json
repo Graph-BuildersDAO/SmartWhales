@@ -1,0 +1,17 @@
+{
+  "network": "arbitrum-one",
+  "zeroaddress": "0x0000000000000000000000000000000000000000",
+  "silorepository": "0x8658047e48CC09161f4152c79155Dac1d710Ff0a",
+  "priceprovidersrepository": "0x5bf4E67127263D951FC515E23B323d0e3b4485fd",
+  "silofactory": "0x4166487056A922D784b073d4d928a516B074b719",
+  "tokensfactory": "0xE067b967A36A136084Eb9DF0149Dde64F01ea7d1",
+  "tower": "0x4182ad1513446861Be314c30DB27C67473541457",
+  "interestratemodel": "0x116e1475780977c351D2b9125006bd550545307c",
+  "silolens": "0x07b94eB6AaD663c4eaf083fBb52928ff9A15BE47",
+  "startblock": "51880000",
+  "blockupdaterblock": "67981966",
+  "liquidationhelperv1": "0x0000000000000000000000000000000000000000",
+  "liquidationhelperv2": "0x0000000000000000000000000000000000000000",
+  "liquidationhelperv3": "0x0000000000000000000000000000000000000000",
+  "incentivescontroller": "0x4999873bF8741bfFFB0ec242AAaA7EF1FE74FCE8"
+}
