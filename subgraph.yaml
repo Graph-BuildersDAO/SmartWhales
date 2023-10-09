@@ -20,6 +20,8 @@ dataSources:
       abis:
         - name: factory
           file: ./abis/factory.json
+        - name: vault
+          file: ./abis/vault.json
       eventHandlers:
         - event: CreateVault(indexed uint256,address[],address,uint256,string,address)
           handler: handleCreateVault
@@ -59,21 +61,40 @@ dataSources:
         - event: FundWithdrawn(address,address,uint256)
           handler: handleFundWithdrawn
       file: ./src/treasury.ts
-  - name: SiloToken
+templates:
+  - name: Vault
     kind: ethereum/contract
     network: base-testnet
     source:
-      abi: ERC20
+      abi: vault
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
       language: wasm/assemblyscript
-      file: ./src/SiloToken.ts
+      file: ./src/vault.ts
       entities:
         - Vault
       abis:
         - name: vault
           file: ./abis/vault.json
       eventHandlers:
-        - event: Transfer(indexed address,indexed address,uint256)
-          handler: handleTransfer
+        - event: AdminWithdraw(address,uint256)
+          handler: handleAdminWithdraw
+        - event: CopyTrade(uint256[])
+          handler: handleCopyTrade
+        - event: FeeDistribution(uint256,uint256)
+          handler: handleFeeDistribution
+        - event: Invest(address,uint256)
+          handler: handleInvest
+        - event: Paused(address)
+          handler: handlePaused
+        - event: Purchased(uint256[])
+          handler: handlePurchased
+        - event: TokensApproved(address[],uint256[],address)
+          handler: handleTokensApproved
+        - event: Unpaused(address)
+          handler: handleUnpaused
+        - event: Withdraw(address,uint256,uint256)
+          handler: handleWithdraw
+        - event: WithdrawTrade(address,uint256,uint256[])
+          handler: handleWithdrawTrade
