@@ -20,6 +20,17 @@ type Vault @entity {
   Deposits: [Deposit!]
   WithdrawRequest: [Withdraw!]
   createdAt: BigInt!
+  vaultDailySnapshots: [VaultDaily!] @derivedFrom(field: "vault")
+  latestDailySnapshot: String!
+  trades: [Trade!]! @derivedFrom(field: "vault")
+}
+
+type VaultDaily @entity {
+  id: ID!
+  day: BigInt!
+  timestamp: BigInt!
+  vault: Vault!
+  AUM: BigDecimal!
 }
 
 ### Account Level ###
@@ -31,11 +42,13 @@ type Account @entity {
 
 "Describes an accounts relationship with a vault"
 type Position @entity {
-  id: Bytes!
+  id: ID!
   account: Account
   vault: Vault
   "not sure if this will be a BigDecimal or an array of BigInt's depends on how users interact with a vault"
-  entry: [BigDecimal!]
+  totalDepositAmount: BigDecimal!
+  totalWithdrawAmount: BigDecimal!
+  currentValue: BigDecimal!
 }
 
 ### Tokens used in Protocol ###
@@ -48,7 +61,7 @@ type Token @entity {
 
 ### Events ###
 type Deposit @entity(immutable: true) {
-  id: Bytes!
+  id: ID!
   hash: Bytes
   eventLog: BigInt
   account: Account
@@ -58,7 +71,7 @@ type Deposit @entity(immutable: true) {
 
 " Reqest to withdraw "
 type Withdraw @entity(immutable: true) {
-  id: Bytes!
+  id: ID!
   hash: Bytes
   eventLog: BigInt
   account: Account
@@ -68,7 +81,7 @@ type Withdraw @entity(immutable: true) {
 
 " The settlement of a withdrawal request "
 type WithdrawTrade @entity(immutable: true) {
-  id: Bytes!
+  id: ID!
   hash: Bytes
   eventLog: BigInt
   account: Account
@@ -78,7 +91,7 @@ type WithdrawTrade @entity(immutable: true) {
 
 #I'm asuming the vault will emit some type of trade event
 type Trade @entity(immutable: true) {
-  id: Bytes!
+  id: ID!
   hash: Bytes
   eventLog: BigInt
   vault: Vault
