@@ -22,6 +22,10 @@ dataSources:
           file: ./abis/factory.json
         - name: vault
           file: ./abis/vault.json
+        - name: ERC20
+          file: ./abis/erc20.json
+        - name: ERC20BYTES
+          file: ./abis/erc20Bytes.json
       eventHandlers:
         - event: CreateVault(indexed uint256,address[],address,uint256,string,address)
           handler: handleCreateVault
@@ -31,8 +35,6 @@ dataSources:
           handler: handleUpdatedFee
         - event: UpdatedTierData((uint256,uint64)[])
           handler: handleUpdatedTierData
-        - event: Upgraded(indexed address)
-          handler: handleUpgraded
       file: ./src/factory.ts
   - kind: ethereum
     name: treasury
@@ -57,6 +59,10 @@ dataSources:
       abis:
         - name: treasury
           file: ./abis/treasury.json
+        - name: ERC20
+          file: ./abis/erc20.json
+        - name: ERC20BYTES
+          file: ./abis/erc20Bytes.json
       eventHandlers:
         - event: FundWithdrawn(address,address,uint256)
           handler: handleFundWithdrawn
@@ -69,7 +75,7 @@ templates:
       abi: vault
     mapping:
       kind: ethereum/events
-      apiVersion: 0.0.6
+      apiVersion: 0.0.7
       language: wasm/assemblyscript
       file: ./src/vault.ts
       entities:
@@ -77,6 +83,10 @@ templates:
       abis:
         - name: vault
           file: ./abis/vault.json
+        - name: ERC20
+          file: ./abis/erc20.json
+        - name: ERC20BYTES
+          file: ./abis/erc20Bytes.json
       eventHandlers:
         - event: AdminWithdraw(address,uint256)
           handler: handleAdminWithdraw

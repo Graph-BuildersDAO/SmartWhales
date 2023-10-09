@@ -1,10 +1,13 @@
 ### Protocol Level ###
 type Protocol @entity {
   id: Bytes!
-  vaults: [Vault!]
-  totalDeposits: BigInt
-  totalDepositAmount: BigInt
-  totalValueLocked: BigInt
+  vaults: [Vault!] @derivedFrom(field: "protocol")
+  totalDeposits: BigInt!
+  totalDepositAmount: BigInt!
+  totalValueLocked: BigInt!
+  tradeFee: BigInt!
+  withdrawalFee: BigInt!
+  acceptedToken: [Token!]!
 }
 
 ### Vault Level ###
@@ -13,12 +16,16 @@ type Vault @entity {
 
   " Swap Vault or Leverage Vault"
   type: String!
+
+  " link to the protocol entity "
+  protocol: Protocol!
+
   AUM: BigDecimal
   tokenBalances: BigInt
-  DepositCount: BigInt
-  WithdrawCount: BigInt
-  Deposits: [Deposit!]
-  WithdrawRequest: [Withdraw!]
+  depositCount: BigInt
+  withdrawCount: BigInt
+  deposits: [Deposit!] @derivedFrom(field: "vault")
+  withdrawRequest: [Withdraw!] @derivedFrom(field: "vault")
   createdAt: BigInt!
   vaultDailySnapshots: [VaultDaily!] @derivedFrom(field: "vault")
   latestDailySnapshot: String!
@@ -54,9 +61,9 @@ type Position @entity {
 ### Tokens used in Protocol ###
 type Token @entity {
   id: Bytes!
-  Name: String!
-  Symbol: String!
-  Decimals: BigInt!
+  name: String!
+  symbol: String!
+  decimals: Int!
 }
 
 ### Events ###
@@ -67,6 +74,7 @@ type Deposit @entity(immutable: true) {
   account: Account
   amount: BigInt
   token: Token
+  vault: Vault
 }
 
 " Reqest to withdraw "
@@ -77,6 +85,7 @@ type Withdraw @entity(immutable: true) {
   account: Account
   amount: BigInt
   token: Token
+  vault: Vault
 }
 
 " The settlement of a withdrawal request "
