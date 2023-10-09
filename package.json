@@ -5,6 +5,24 @@
     "codegen": "graph codegen",
     "build": "graph build",
     "deploy": "graph deploy --node https://api.studio.thegraph.com/deploy/ smartwhales",
+    "prepare-config:arbi": "cross-env ts-node ./script/prepareNetwork.ts arbitrum-one",
+    "prepare-config:mainnet": "cross-env ts-node ./script/prepareNetwork.ts mainnet",
+    "prepare-config:base": "cross-env ts-node ./script/prepareNetwork.ts llama",
+    "prepare-config:base-testnet": "cross-env ts-node ./script/prepareNetwork.ts llama",
+    "prepare-config:bsc": "cross-env ts-node ./script/prepareNetwork.ts llama",
+    "prepare-config:optimism": "cross-env ts-node ./script/prepareNetwork.ts llama",
+    "prepare:arbi": "cross-env mustache config/arbitrum-one/arbitrum-one.json subgraph.template.yaml > subgraph.yaml",
+    "build:arbi": "cross-env yarn prepare-config:arbi && yarn prepare:arbi && yarn codegen && yarn build",
+    "prepare:mainnet": "cross-env mustache config/mainnet/mainnet.json subgraph.template.yaml > subgraph.yaml",
+    "build:mainnet": "cross-env yarn prepare-config:mainnet && yarn prepare:mainnet && yarn codegen && yarn build",
+    "prepare:base": "cross-env mustache config/llama/llama.json subgraph.template.yaml > subgraph.yaml",
+    "build:base": "cross-env yarn prepare-config:llama && yarn prepare:llama && yarn codegen && yarn build",
+    "prepare:base-testnet": "cross-env mustache config/llama/llama.json subgraph.template.yaml > subgraph.yaml",
+    "build:base-testnet": "cross-env yarn prepare-config:llama && yarn prepare:llama && yarn codegen && yarn build",
+    "prepare:bsc": "cross-env mustache config/llama/llama.json subgraph.template.yaml > subgraph.yaml",
+    "build:bsc": "cross-env yarn prepare-config:llama && yarn prepare:llama && yarn codegen && yarn build",
+    "prepare:optimism": "cross-env mustache config/llama/llama.json subgraph.template.yaml > subgraph.yaml",
+    "build:optimism": "cross-env yarn prepare-config:llama && yarn prepare:llama && yarn codegen && yarn build",
     "create-local": "graph create --node http://localhost:8020/ smartwhales",
     "remove-local": "graph remove --node http://localhost:8020/ smartwhales",
     "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 smartwhales",
@@ -14,5 +32,7 @@
     "@graphprotocol/graph-cli": "0.58.0",
     "@graphprotocol/graph-ts": "0.30.0"
   },
-  "devDependencies": { "matchstick-as": "0.5.0" }
+  "devDependencies": {
+    "matchstick-as": "0.5.0"
+  }
 }
