@@ -1,13 +1,6 @@
 {
   "network": "arbitrum-one",
-  "zeroaddress": "0x0000000000000000000000000000000000000000",
-  "tokensfactory": "0xE067b967A36A136084Eb9DF0149Dde64F01ea7d1",
-  "tower": "0x4182ad1513446861Be314c30DB27C67473541457",
-  "interestratemodel": "0x116e1475780977c351D2b9125006bd550545307c",
-  "startblock": "51880000",
-  "blockupdaterblock": "67981966",
-  "liquidationhelperv1": "0x0000000000000000000000000000000000000000",
-  "liquidationhelperv2": "0x0000000000000000000000000000000000000000",
-  "liquidationhelperv3": "0x0000000000000000000000000000000000000000",
-  "incentivescontroller": "0x4999873bF8741bfFFB0ec242AAaA7EF1FE74FCE8"
+  "factory": "0x96356d414a925FC98bEe2e1954bab6971FF99825",
+  "treasury": "0x7BBC140F4C46baE7358d7283dd778c716E4eA1b5",
+  "startblock": "9141082"
 }
