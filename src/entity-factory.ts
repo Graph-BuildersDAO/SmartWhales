@@ -1,27 +1,50 @@
 import {Address, log} from "@graphprotocol/graph-ts";
-import {Protocol, Token} from "../generated/schema";
+import {Account, Protocol, Token, Vault} from "../generated/schema";
 import {ERC20} from "../generated/factory/ERC20";
 import {ERC20BYTES} from "../generated/factory/ERC20BYTES";
 import {constants} from "./constants";
+import {factory} from "../generated/factory/factory";
 
 export function getProtocol(): Protocol {
   let protocol = Protocol.load(constants.FACTORY);
 
   if (!protocol) {
     protocol = new Protocol(constants.FACTORY);
-    protocol.totalDeposits = constants.BIGINT_ZERO;
-    protocol.totalDepositAmount = constants.BIGINT_ZERO;
+
+    // Protocol Counters
+    protocol.investCount = constants.BIGINT_ZERO;
+    protocol.investedAmount = constants.BIGINT_ZERO;
+    protocol.withdrawCount = constants.BIGINT_ZERO;
+    protocol.withdrawnAmount = constants.BIGINT_ZERO;
     protocol.totalValueLocked = constants.BIGINT_ZERO;
-    protocol.tradeFee = constants.BIGINT_ZERO;
-    protocol.withdrawalFee = constants.BIGINT_ZERO;
-    protocol.acceptedToken = [];
+    protocol.cumulativeUniqueUsers = 0;
+
+    // ETH calls to get the withdrawal fee, trade fee and accepted token
+    let _factory = factory.bind(constants.FACTORY);
+
+    let try_tradeFee = _factory.try_tradeFee();
+    let try_withdrawalFee = _factory.try_withdrawalFee();
+    let try_accptedToken = _factory.try_acceptedToken();
+
+    let tradeFee = try_tradeFee.reverted ? constants.BIGINT_ZERO : try_tradeFee.value;
+    let withdrawalFee = try_withdrawalFee.reverted ? constants.BIGINT_ZERO : try_withdrawalFee.value;
+    let acceptedToken = getOrCreateToken(try_accptedToken.reverted ? Address.fromString(constants.ADDRESS_ZERO) : try_accptedToken.value);
+
+    protocol.tradeFee = tradeFee;
+    protocol.withdrawalFee = withdrawalFee;
+    protocol.acceptedToken = acceptedToken.id;
     protocol.save();
   }
 
   return protocol as Protocol;
 }
 
-export function GetOrCreateToken(address: Address): Token {
+export function getVault(address: Address): Vault {
+  let vault = Vault.load(address)!;
+  return vault as Vault;
+}
+
+export function getOrCreateToken(address: Address): Token {
   let token = Token.load(address);
 
   if (!token) {
@@ -60,4 +83,25 @@ export function GetOrCreateToken(address: Address): Token {
   token.save();
 
   return token as Token;
+}
+
+export function GetOrCreateAccount(address: Address): Account {
+  let account = Account.load(address);
+
+  if (!account) {
+    account = new Account(address);
+    account.investedAmount = constants.BIGINT_ZERO;
+    account.investCount = constants.BIGINT_ZERO;
+    account.withdrawnAmount = constants.BIGINT_ZERO;
+    account.withdrawCount = constants.BIGINT_ZERO;
+    account.save();
+
+    //incremenet protocol users
+    let protocol = getProtocol();
+
+    protocol.cumulativeUniqueUsers = protocol.cumulativeUniqueUsers + 1;
+    protocol.save();
+  }
+
+  return account as Account;
 }

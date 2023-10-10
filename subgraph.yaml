@@ -100,8 +100,6 @@ templates:
           handler: handlePaused
         - event: Purchased(uint256[])
           handler: handlePurchased
-        - event: TokensApproved(address[],uint256[],address)
-          handler: handleTokensApproved
         - event: Unpaused(address)
           handler: handleUnpaused
         - event: Withdraw(address,uint256,uint256)

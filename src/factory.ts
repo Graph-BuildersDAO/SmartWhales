@@ -12,10 +12,13 @@ export function handleCreateVault(event: CreateVault): void {
   vault.protocol = protocol.id;
   vault.AUM = constants.BIGDECIMAL_ZERO;
   vault.tokenBalances = constants.BIGINT_ZERO;
-  vault.depositCount = constants.BIGINT_ZERO;
+  vault.investCount = constants.BIGINT_ZERO;
+  vault.investedAmount = constants.BIGINT_ZERO;
   vault.withdrawCount = constants.BIGINT_ZERO;
+  vault.withdrawnAmount = constants.BIGINT_ZERO;
   vault.createdAt = event.block.timestamp;
   vault.latestDailySnapshot = "";
+  vault.isPaused = false;
 
   vault.save();
 
@@ -25,14 +28,7 @@ export function handleCreateVault(event: CreateVault): void {
 export function handleUpdatedAcceptedToken(event: UpdatedAcceptedToken): void {
   let protocol = getProtocol();
 
-  let acceptedTokens = protocol.acceptedToken;
-  if (acceptedTokens.length > 0) {
-    acceptedTokens.push(event.params.acceptedToken);
-  } else {
-    acceptedTokens = [event.params.acceptedToken];
-  }
-
-  protocol.acceptedToken = acceptedTokens;
+  protocol.acceptedToken = event.params.acceptedToken;
   protocol.save();
 }
 

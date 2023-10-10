@@ -2,12 +2,17 @@
 type Protocol @entity {
   id: Bytes!
   vaults: [Vault!] @derivedFrom(field: "protocol")
-  totalDeposits: BigInt!
-  totalDepositAmount: BigInt!
+  investCount: BigInt!
+  investedAmount: BigInt!
+  withdrawCount: BigInt!
+  withdrawnAmount: BigInt!
   totalValueLocked: BigInt!
   tradeFee: BigInt!
   withdrawalFee: BigInt!
-  acceptedToken: [Token!]!
+  acceptedToken: Token!
+
+  " Total number of unique addresses that have interacted with the protocol "
+  cumulativeUniqueUsers: Int!
 }
 
 ### Vault Level ###
@@ -20,16 +25,21 @@ type Vault @entity {
   " link to the protocol entity "
   protocol: Protocol!
 
-  AUM: BigDecimal
-  tokenBalances: BigInt
-  depositCount: BigInt
-  withdrawCount: BigInt
-  deposits: [Deposit!] @derivedFrom(field: "vault")
+  AUM: BigDecimal!
+  tokenBalances: BigInt!
+  investCount: BigInt!
+  investedAmount: BigInt!
+  invests: [Invest!] @derivedFrom(field: "vault")
+  withdrawCount: BigInt!
+  withdrawnAmount: BigInt!
   withdrawRequest: [Withdraw!] @derivedFrom(field: "vault")
   createdAt: BigInt!
   vaultDailySnapshots: [VaultDaily!] @derivedFrom(field: "vault")
   latestDailySnapshot: String!
   trades: [Trade!]! @derivedFrom(field: "vault")
+
+  " Is the vault paused "
+  isPaused: Boolean!
 }
 
 type VaultDaily @entity {
@@ -43,8 +53,12 @@ type VaultDaily @entity {
 ### Account Level ###
 type Account @entity {
   id: Bytes!
-  deposits: [Deposit!]
-  withdrawRequests: [Withdraw!]
+  invests: [Invest!] @derivedFrom(field: "account")
+  investedAmount: BigInt!
+  investCount: BigInt!
+  withdrawRequests: [Withdraw!] @derivedFrom(field: "account")
+  withdrawnAmount: BigInt!
+  withdrawCount: BigInt!
 }
 
 "Describes an accounts relationship with a vault"
@@ -53,7 +67,7 @@ type Position @entity {
   account: Account
   vault: Vault
   "not sure if this will be a BigDecimal or an array of BigInt's depends on how users interact with a vault"
-  totalDepositAmount: BigDecimal!
+  totalInvestedAmount: BigDecimal!
   totalWithdrawAmount: BigDecimal!
   currentValue: BigDecimal!
 }
@@ -67,14 +81,14 @@ type Token @entity {
 }
 
 ### Events ###
-type Deposit @entity(immutable: true) {
+type Invest @entity(immutable: true) {
   id: ID!
-  hash: Bytes
-  eventLog: BigInt
-  account: Account
-  amount: BigInt
-  token: Token
-  vault: Vault
+  hash: Bytes!
+  eventLog: BigInt!
+  account: Account!
+  amount: BigInt!
+  token: Token!
+  vault: Vault!
 }
 
 " Reqest to withdraw "
